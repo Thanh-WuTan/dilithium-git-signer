@@ -61,17 +61,13 @@ def generate_keypair(level, email):
     save_public_key(email, pk.hex(), level)
     return keys
 
-def sign_commit(commit_msg, sk, level, verbose):
+def sign_commit(commit_msg, sk, level):
     """Sign a commit message using Dilithium."""
     dilithium = SECURITY_LEVELS[level]
-    if verbose:
-        print("Signing commit with Dilithium polynomial operations...")
     sig = dilithium.sign(sk, commit_msg)
     return sig
 
-def verify_commit(commit_msg, sig, pk, level, verbose):
+def verify_commit(commit_msg, sig, pk, level):
     """Verify a commit's Dilithium signature."""
     dilithium = SECURITY_LEVELS[level]
-    if verbose:
-        print("Verifying signature with Dilithium polynomial operations...")
     return dilithium.verify(pk, commit_msg, sig)

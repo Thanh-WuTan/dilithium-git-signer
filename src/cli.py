@@ -6,12 +6,10 @@ from src.signer import ensure_config_dir, load_keys, generate_keypair, sign_comm
 from src.git_integration import run_git_command, setup_hook
 
 @click.group()
-@click.option('--verbose', is_flag=True, help="Show detailed polynomial operations")
 @click.pass_context
-def cli(ctx, verbose):
+def cli(ctx):
     """Dilithium Git Commit Signer: Sign and verify Git commits with Dilithium."""
     ctx.ensure_object(dict)
-    ctx.obj['verbose'] = verbose
     ensure_config_dir()
 
 @cli.command()
@@ -53,7 +51,7 @@ def sign(ctx, commit_hash):
     commit_msg = run_git_command(['show', '-s', '--format=%B', commit_hash]).encode()
     
     # Sign commit
-    sig = sign_commit(commit_msg, sk, level, ctx.obj['verbose'])
+    sig = sign_commit(commit_msg, sk, level)
     
     # Store signature and email in Git notes
     note_data = json.dumps({"email": email, "signature": sig.hex()})
@@ -87,7 +85,7 @@ def verify(ctx, commit_hash):
     commit_msg = run_git_command(['show', '-s', '--format=%B', commit_hash]).encode()
     
     # Verify signature
-    is_valid = verify_commit(commit_msg, sig, pk, level, ctx.obj['verbose'])
+    is_valid = verify_commit(commit_msg, sig, pk, level)
     click.echo(f"Signature verification for {commit_hash} by {email}: {'Valid' if is_valid else 'Invalid'}")
 
 if __name__ == '__main__':
