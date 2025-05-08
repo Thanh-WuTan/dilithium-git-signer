@@ -32,13 +32,20 @@ def save_keys(keys):
     with open(KEY_FILE, 'w') as f:
         json.dump(keys, f)
 
-
 def save_public_key(email, public_key, level):
     """Save a public key to the registry."""
     key_file = REGISTRY_DIR / f"{email}.json"
     with open(key_file, 'w') as f:
         json.dump({"email": email, "public_key": public_key, "level": level}, f)
 
+def load_public_key(email):
+    """Load a public key from the registry by email."""
+    key_file = REGISTRY_DIR / f"{email}.json"
+    if not key_file.exists():
+        return None
+    with open(key_file, 'r') as f:
+        return json.load(f)
+    return None
 
 def generate_keypair(level, email):
     """Generate a new Dilithium key pair and save it."""
@@ -53,3 +60,18 @@ def generate_keypair(level, email):
     save_keys(keys)
     save_public_key(email, pk.hex(), level)
     return keys
+
+def sign_commit(commit_msg, sk, level, verbose):
+    """Sign a commit message using Dilithium."""
+    dilithium = SECURITY_LEVELS[level]
+    if verbose:
+        print("Signing commit with Dilithium polynomial operations...")
+    sig = dilithium.sign(sk, commit_msg)
+    return sig
+
+def verify_commit(commit_msg, sig, pk, level, verbose):
+    """Verify a commit's Dilithium signature."""
+    dilithium = SECURITY_LEVELS[level]
+    if verbose:
+        print("Verifying signature with Dilithium polynomial operations...")
+    return dilithium.verify(pk, commit_msg, sig)
