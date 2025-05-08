@@ -17,7 +17,6 @@ setup(
     install_requires=[
         "dilithium-py",
         "click",
-        "pycryptodome",
     ],
     entry_points={
         "console_scripts": [
