@@ -29,7 +29,7 @@ source ~/.bashrc
 ```
 
 **3. Verify setup**
-``bash
+```bash
 dilithium-signer --help
 ```
 
