@@ -36,8 +36,6 @@ def keygen(level, email):
     keys = generate_keypair(level, email)
     click.echo(f"Generated Dilithium-{level} key pair for {email}: {Path.home() / '.dilithium-signer/keys.json'}")
 
-
-
 @cli.command()
 @click.argument('commit_hash')
 @click.pass_context
@@ -91,7 +89,6 @@ def verify(ctx, commit_hash):
     # Verify signature
     is_valid = verify_commit(commit_msg, sig, pk, level, ctx.obj['verbose'])
     click.echo(f"Signature verification for {commit_hash} by {email}: {'Valid' if is_valid else 'Invalid'}")
-
 
 if __name__ == '__main__':
     cli()
