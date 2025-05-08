@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+dilithium_git_signer.egg-info/PKG-INFO
+dilithium_git_signer.egg-info/SOURCES.txt
+dilithium_git_signer.egg-info/dependency_links.txt
+dilithium_git_signer.egg-info/entry_points.txt
+dilithium_git_signer.egg-info/requires.txt
+dilithium_git_signer.egg-info/top_level.txt
+src/__init__.py
+src/cli.py
+src/git_integration.py
+src/signer.py
