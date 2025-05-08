@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dilithium-git-signer"
+version = "0.1.0"
+description = "A CLI tool to sign and verify Git commits with Dilithium"
+readme = "README.md"
+authors = [{name = "Thanh-WuTan", email = "wt.vathanh@gmail.com"}]
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    "dilithium-py",
+    "click",
+    "pycryptodome"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+dilithium-signer = "src.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/Thanh-WuTan/dilithium-git-signer"
