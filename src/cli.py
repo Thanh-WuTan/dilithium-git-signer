@@ -76,7 +76,7 @@ def verify(ctx, commit_hash):
     # Load public key from registry
     key_data = load_public_key(email)
     if not key_data:
-        raise click.ClickException(f"No public key found for {email}. Import it with 'import-key'.")
+        raise click.ClickException(f"No public key found for {email}.")
     
     pk = bytes.fromhex(key_data['public_key'])
     level = key_data['level']
