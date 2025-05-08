@@ -28,6 +28,11 @@ echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+**3. Verify setup**
+``bash
+dilithium-signer --help
+```
+
 # Usage
 
 **1. Initialize the tool (generate keys and set up the post-commit hook):**
