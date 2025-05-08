@@ -26,6 +26,14 @@ def init(level, email):
     click.echo(f"Generated Dilithium-{level} key pair for {email} and saved to {Path.home() / '.dilithium-signer'}")
     click.echo(f"Installed Git hook at {hook_path}")
 
+@cli.command()
+@click.option('--level', type=click.Choice(['2', '3', '5']), default='2', help="Dilithium security level")
+@click.option('--email', required=True, help="User's email for identification")
+def keygen(level, email):
+    """Generate a new Dilithium key pair."""
+    keys = generate_keypair(level, email)
+    click.echo(f"Generated Dilithium-{level} key pair for {email}: {Path.home() / '.dilithium-signer/keys.json'}")
+
 
 if __name__ == '__main__':
     cli()
