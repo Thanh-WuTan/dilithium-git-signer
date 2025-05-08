@@ -64,6 +64,11 @@ Example output:
 {"email": "exmaple@email", "signature": "<hex-signature>"}
 ```
 
+**5. Manually set up hook (if needed):**
+```bash
+dilithium-signer setup-hook
+```
+
 # Uninstallation and Hook Removal
 
 To stop using the tool:

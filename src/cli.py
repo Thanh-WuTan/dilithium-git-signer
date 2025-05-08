@@ -22,7 +22,7 @@ def init(level, email):
         click.confirm("Keys already exist. Overwrite?", abort=True)
     
     keys = generate_keypair(level, email)
-    hook_path = setup_hook(email)
+    hook_path = setup_hook()
     click.echo(f"Generated Dilithium-{level} key pair for {email} and saved to {Path.home() / '.dilithium-signer'}")
     click.echo(f"Installed Git hook at {hook_path}")
 
@@ -87,6 +87,13 @@ def verify(ctx, commit_hash):
     # Verify signature
     is_valid = verify_commit(commit_msg, sig, pk, level)
     click.echo(f"Signature verification for {commit_hash} by {email}: {'Valid' if is_valid else 'Invalid'}")
+
+
+@cli.command(name='setup-hook')
+def setup_hook_command():
+    """Install Git hook for automatic commit signing."""
+    hook_path = setup_hook()
+    click.echo(f"Installed Git hook at {hook_path}")
 
 if __name__ == '__main__':
     cli()
