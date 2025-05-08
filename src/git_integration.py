@@ -11,7 +11,7 @@ def run_git_command(args):
         raise RuntimeError(f"Git command failed: {result.stderr}")
     return result.stdout.strip()
 
-def setup_hook(email):
+def setup_hook():
     """Install Git hook for automatic commit signing."""
     hook_dir = Path('.git/hooks')
     hook_dir.mkdir(exist_ok=True)
