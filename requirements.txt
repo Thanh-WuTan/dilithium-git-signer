@@ -1,3 +1,4 @@
 dilithium-py 
 click
 pycryptodome
+pytest
