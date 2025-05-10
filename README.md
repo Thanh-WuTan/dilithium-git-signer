@@ -46,9 +46,14 @@ dilithium-signer init --level 2 --email example@email
 dilithium-signer export-key --output </path/to/output/file>
 ```
 
-**Save a public key to the registry:**
+**Save a public key to local registry:**
 ```bash
 dilithium-signer import-key <path/to/public/key/file>
+```
+
+**List public keys in local registry:**
+```bash
+dilithium-signer list-keys
 ```
 
 **Sign a commit (automatic via the post-commit hook or manual):**
