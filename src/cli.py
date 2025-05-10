@@ -2,7 +2,7 @@ import click
 import json
 import subprocess
 from pathlib import Path
-from src.signer import ensure_config_dir, load_keys, generate_keypair, sign_commit, verify_commit, load_public_key
+from src.signer import ensure_config_dir, load_keys, generate_keypair, sign_commit, verify_commit, load_public_key, save_public_key, SECURITY_LEVELS
 from src.git_integration import run_git_command, setup_hook
 
 @click.group()
@@ -88,6 +88,43 @@ def verify(ctx, commit_hash):
     is_valid = verify_commit(commit_msg, sig, pk, level)
     click.echo(f"Signature verification for {commit_hash} by {email}: {'Valid' if is_valid else 'Invalid'}")
 
+
+@cli.command()
+@click.option('--output', type=click.Path(), default="public_key.json", help="Output file for public key")
+def export_key(output):
+    """Export the user's public key to a file."""
+    keys = load_keys()
+    if not keys:
+        raise click.ClickException("No keys found. Run 'init' or 'keygen' first.")
+    
+    public_key_data = {
+        "email": keys['email'],
+        "public_key": keys['public_key'],
+        "level": keys['level']
+    }
+    with open(output, 'w') as f:
+        json.dump(public_key_data, f)
+    click.echo(f"Exported public key to {output}")
+
+@cli.command()
+@click.argument('key_file', type=click.Path(exists=True))
+def import_key(key_file):
+    """Import a teammate's public key from a file."""
+    with open(key_file, 'r') as f:
+        key_data = json.load(f)
+    
+    try:
+        email = key_data['email']
+        public_key = key_data['public_key']
+        level = key_data['level']
+    except KeyError:
+        raise click.ClickException("Invalid key file format. Must contain email, public_key, and level.")
+    
+    if level not in SECURITY_LEVELS:
+        raise click.ClickException(f"Invalid security level: {level}")
+    
+    save_public_key(email, public_key, level)
+    click.echo(f"Imported public key for {email} to registry")
 
 @cli.command(name='setup-hook')
 def setup_hook_command():
