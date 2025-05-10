@@ -2,7 +2,7 @@ import click
 import json
 import subprocess
 from pathlib import Path
-from src.signer import ensure_config_dir, load_keys, generate_keypair, sign_commit, verify_commit, load_public_key, save_public_key, SECURITY_LEVELS
+from src.signer import ensure_config_dir, load_keys, generate_keypair, sign_commit, verify_commit, load_public_key, save_public_key, SECURITY_LEVELS, REGISTRY_DIR
 from src.git_integration import run_git_command, setup_hook
 
 @click.group()
@@ -131,6 +131,39 @@ def setup_hook_command():
     """Install Git hook for automatic commit signing."""
     hook_path = setup_hook()
     click.echo(f"Installed Git hook at {hook_path}")
+
+
+@cli.command(name='list-keys')
+def list_keys():
+    """List all public keys in the registry."""
+    if not REGISTRY_DIR.exists():
+        click.echo("No public keys found in registry.")
+        return
+    
+    keys = []
+    for key_file in REGISTRY_DIR.glob("*.json"):
+        try:
+            with open(key_file, 'r') as f:
+                key_data = json.load(f)
+            email = key_data.get('email', 'Unknown')
+            public_key = key_data.get('public_key', 'Unknown')[:16] + "..."  
+            level = key_data.get('level', 'Unknown')
+            keys.append((email, public_key, level))
+        except (json.JSONDecodeError, KeyError):
+            click.echo(f"Warning: Invalid key file {key_file}")
+            continue
+    
+    if not keys:
+        click.echo("No valid public keys found in registry.")
+        return
+    
+    click.echo("\nPublic Keys in Registry:")
+    click.echo("-" * 60)
+    click.echo(f"{'Email':<30} {'Public Key (truncated)':<20} {'Level':<5}")
+    click.echo("-" * 60)
+    for email, public_key, level in keys:
+        click.echo(f"{email:<30} {public_key:<22} {level:<5}")
+    click.echo("-" * 60)
 
 if __name__ == '__main__':
     cli()
