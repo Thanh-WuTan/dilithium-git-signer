@@ -5,8 +5,9 @@ A CLI tool to sign and verify Git commits using the CRYSTALS-Dilithium post-quan
 
 # Features
 - Generate Dilithium key pairs for different security levels (2, 3, 5).
-- Sign Git commits with your private key and store signatures in Git notes (refs/notes/signatures).
-- Automatic signing via a post-commit Git hook.
+- Sign Git commits with your private key and store signatures in Git notes (`refs/notes/signatures`).
+- Export/import public keys to/from files for team collaboration.
+- Automatic signing via a `post-commit` Git hook.
 - View signatures stored in Git notes.
 
 # Installation
@@ -35,12 +36,22 @@ dilithium-signer --help
 
 # Usage
 
-**1. Initialize the tool (generate keys and set up the post-commit hook):**
+**Initialize the tool (generate keys and set up the post-commit hook):**
 ```bash
 dilithium-signer init --level 2 --email example@email
 ```
 
-**2. Sign a commit (automatic via the post-commit hook or manual):**
+**Export public key to share:**
+```bash
+dilithium-signer export-key --output </path/to/output/file>
+```
+
+**Save a public key to the registry:**
+```bash
+dilithium-signer import-key <path/to/public/key/file>
+```
+
+**Sign a commit (automatic via the post-commit hook or manual):**
 ```bash
 # Automatically:
 git commit -m "Commit message"
@@ -48,13 +59,12 @@ git commit -m "Commit message"
 dilithium-signer sign <commit-hash>
 ```
 
-**3. Verify a commit:**
+**Verify a commit:**
 ```bash
 dilithium-signer verify <commit-hash>
 ```
 
-
-**4. View a commit’s signature: Signatures are stored in Git notes (refs/notes/signatures). View with:**
+**View a commit’s signature: Signatures are stored in Git notes (refs/notes/signatures). View with:**
 ```bash
 git notes --ref=signatures show <commit-hash>
 ```
@@ -64,7 +74,7 @@ Example output:
 {"email": "exmaple@email", "signature": "<hex-signature>"}
 ```
 
-**5. Manually set up hook (if needed):**
+**Manually set up hook (if needed):**
 ```bash
 dilithium-signer setup-hook
 ```
