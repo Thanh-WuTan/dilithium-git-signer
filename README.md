@@ -84,6 +84,73 @@ Example output:
 dilithium-signer setup-hook
 ```
 
+
+# Workflow
+
+This tool facilitates signing your Git commits and verifying commits from others in your team.
+
+**Scenario 1: Individual Setup and Signing**
+
+1.  **Alice (you) initializes the tool:**
+
+    ```bash
+    dilithium-signer init --level 2 --email alice@example.com
+    ```
+
+      * This creates a unique Dilithium key pair (private and public) for Alice.
+      * The private key is stored securely at `~/.dilithium-signer/keys.json`.
+      * Alice's public key is also added to her local "registry" (`~/.dilithium-signer/registry/alice@example.com.json`).
+      * A `post-commit` Git hook is set up in the current Git repository to automatically sign new commits.
+
+2.  **Alice makes a commit:**
+
+    ```bash
+    git commit -m "My important feature"
+    ```
+
+      * The `post-commit` hook automatically runs `dilithium-signer sign <new_commit_hash>`.
+      * The commit is signed using Alice's private key.
+      * The signature, along with Alice's email, is stored in Git notes (`refs/notes/signatures`) associated with the commit.
+
+**Scenario 2: Sharing Your Public Key and Team Verification**
+
+1.  **Alice exports her public key:**
+
+    ```bash
+    dilithium-signer export-key --output alice_public_key.json
+    ```
+
+      * Alice sends the `alice_public_key.json` file to her teammate, Bob.
+
+2.  **Bob imports Alice's public key:**
+
+      * Bob needs to have `dilithium-git-signer` installed on his machine.
+      * Bob runs:
+        ```bash
+        dilithium-signer import-key /path/to/alice_public_key.json
+        ```
+      * Alice's public key is now stored in Bob's local registry (`~/.dilithium-signer/registry/alice@example.com.json`).
+
+3.  **Bob fetches Alice's changes and verifies a commit:**
+
+      * Bob pulls Alice's branch, which includes her signed commits and their associated Git notes.
+      * Bob can then verify a specific commit from Alice:
+        ```bash
+        dilithium-signer verify <commit_hash_from_alice>
+        ```
+      * The tool uses Alice's public key (from Bob's registry) to check the signature stored in the Git notes for that commit. Bob will see a "Valid" or "Invalid" message.
+
+**Scenario 3: Manual Signing**
+
+If automatic signing via the hook is disabled, or if you want to sign an older commit:
+
+```bash
+dilithium-signer sign <commit_hash_to_sign>
+```
+
+This requires you to have run `init` or `keygen` previously to have a private key.
+
+
 # Uninstallation and Hook Removal
 
 To stop using the tool:
